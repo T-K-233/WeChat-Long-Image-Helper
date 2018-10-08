@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+
+''' run.py: convert screenshots into a long image '''
+
+__author__ = '-T.K.-'
+
 import os
 import cv2
 import numpy as np
@@ -5,6 +11,7 @@ import numpy as np
 folder_name = 'imgs'
 
 def read_files():
+    ''' sort the imgs according to the time last modified '''
     files = []
     for file in list(os.walk(folder_name))[0][-1]:
         filename = os.path.join(folder_name, file)
@@ -14,7 +21,13 @@ def read_files():
     return files
 
 def crop_top(img):
-    return img[128:, :, :]
+    crop_height = 128
+    for i in range(1, img.shape[0]):
+        if (img[i, :, :] == (235, 235, 235)).all():
+            crop_height = i
+            break
+    img = img[crop_height:, :, :]
+    return img
 
 
 def crop_bottom(img):
@@ -40,5 +53,5 @@ def run():
 
     cv2.imwrite('result.png', res_img)
 
-
-run()
+if __name__ == '__main__':
+    run()
